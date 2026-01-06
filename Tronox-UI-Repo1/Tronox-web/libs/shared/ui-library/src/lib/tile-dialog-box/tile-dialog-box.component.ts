@@ -28,6 +28,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
+import { EXPRESS_BASE_URL } from '../consts';
 @Component({
   selector: 'lib-tile-dialog-box',
   imports: [
@@ -45,9 +46,11 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './tile-dialog-box.component.html',
   styleUrl: './tile-dialog-box.component.scss',
 })
-export class TileDialogBoxComponent implements AfterViewChecked, OnInit, OnDestroy {
+export class TileDialogBoxComponent
+  implements AfterViewChecked, OnInit, OnDestroy
+{
   hasResults = true;
-  logs:any;
+  logs: any;
   logContent: any;
   logInterval: any;
   terminalVisible = false;
@@ -69,20 +72,24 @@ export class TileDialogBoxComponent implements AfterViewChecked, OnInit, OnDestr
 
   // Helps to display the logs
   getLogs(): void {
-    this.http.get('http://35.244.54.64:3000/get-log', { responseType: 'text' }).subscribe({
-      next: (data: string) => {
-        this.terminalOutput = data.split('\n').filter(line => line.trim() !== '');
-        setTimeout(() => {
-          const terminal = document.querySelector('.terminal');
-          if (terminal) terminal.scrollTop = terminal.scrollHeight;
-        }, 100);
-      },
-      error: (err) => {
-        console.error('❌ Failed to fetch logs:', err);
-      }
-    });
+    this.http
+      .get(`${EXPRESS_BASE_URL}/get-log`, { responseType: 'text' })
+      .subscribe({
+        next: (data: string) => {
+          this.terminalOutput = data
+            .split('\n')
+            .filter((line) => line.trim() !== '');
+          setTimeout(() => {
+            const terminal = document.querySelector('.terminal');
+            if (terminal) terminal.scrollTop = terminal.scrollHeight;
+          }, 100);
+        },
+        error: (err: any) => {
+          console.error('❌ Failed to fetch logs:', err);
+        },
+      });
   }
-   
+
   clearLogs(): void {
     this.tileService.clearLogFile().subscribe({
       next: () => {
@@ -91,11 +98,10 @@ export class TileDialogBoxComponent implements AfterViewChecked, OnInit, OnDestr
       },
       error: (err) => {
         console.error('Failed to clear logs:', err);
-      }
+      },
     });
   }
-  
-  
+
   fileName: string | null = null;
   fileUrl: string | null = null;
   fileUploaded = false;
@@ -132,24 +138,27 @@ export class TileDialogBoxComponent implements AfterViewChecked, OnInit, OnDestr
     this.terminalVisible = true;
     this.getLogs(); // initial log fetch
 
-    this.tileService.uploadAndFetchRealTimeRes(this.file, this.data?.tile?.appNamespec).subscribe({
-      next: (chunk) => {
-        const logPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z - Testcase failed at .+$/gm;
-        const filteredLines = chunk.match(logPattern) || [];
-        if (filteredLines.length > 0) {
-          this.terminalOutput.push(...filteredLines);
-        }
-      },
-      error: (error) => {
-        console.error("❌ Error uploading file:", error);
-        this.isProcessing = false;
-        this.fetchTestResults();
-      },
-      complete: () => {
-        this.isProcessing = false;
-        this.fetchTestResults();
-      }
-    });
+    this.tileService
+      .uploadAndFetchRealTimeRes(this.file, this.data?.tile?.appNamespec)
+      .subscribe({
+        next: (chunk) => {
+          const logPattern =
+            /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z - Testcase failed at .+$/gm;
+          const filteredLines = chunk.match(logPattern) || [];
+          if (filteredLines.length > 0) {
+            this.terminalOutput.push(...filteredLines);
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error uploading file:', error);
+          this.isProcessing = false;
+          this.fetchTestResults();
+        },
+        complete: () => {
+          this.isProcessing = false;
+          this.fetchTestResults();
+        },
+      });
   }
 
   fetchTestResults() {

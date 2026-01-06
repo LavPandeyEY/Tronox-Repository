@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import {
+  EXPRESS_BASE_URL,
   GET_TILES,
   GET_WORD_DOC,
   REALTIME_RESULT_URL,
@@ -16,15 +17,17 @@ export class TileService {
   constructor(private http: HttpClient) {}
 
   getLogUpdates() {
-    return this.http.get('http://35.244.54.64:3000/get-log-updates', {
-      responseType: 'text'
+    return this.http.get(`${EXPRESS_BASE_URL}/get-log-updates`, {
+      responseType: 'text',
     });
   }
   getLogs() {
-    return this.http.get('http://35.244.54.64:3000/get-log', { responseType: 'text' });
+    return this.http.get(`${EXPRESS_BASE_URL}/get-log`, {
+      responseType: 'text',
+    });
   }
   clearLogFile(): Observable<any> {
-    return this.http.post('http://35.244.54.64:3000/clear-log', {});
+    return this.http.post(`${EXPRESS_BASE_URL}/clear-log`, {});
   }
 
   getTiles(): Observable<any> {
@@ -60,7 +63,7 @@ export class TileService {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('testName', testName);
-    return new Observable<string>((observer) => {
+    return new Observable<string>((observer: any) => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', REALTIME_RESULT_URL, true);
 
@@ -97,7 +100,7 @@ export class TileService {
   //   return new Observable<string>((observer) => {
   //     const xhr = new XMLHttpRequest();
   //     xhr.open("GET", "http://34.93.231.170:3000/get-log-updates", true);
-  
+
   //     xhr.onreadystatechange = () => {
   //       if (xhr.readyState === 3) {
   //         observer.next(xhr.responseText);
@@ -105,10 +108,8 @@ export class TileService {
   //         observer.complete();
   //       }
   //     };
-  
+
   //     xhr.send();
   //   });
   // }
-
-  
 }

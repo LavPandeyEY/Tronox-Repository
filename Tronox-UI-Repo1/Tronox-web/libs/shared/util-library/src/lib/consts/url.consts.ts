@@ -1,4 +1,5 @@
-export const EXPRESS_BASE_URL = 'http://35.244.54.64:3000'; //To be made Dynamic through env
+//export const EXPRESS_BASE_URL = 'http://localhost:3000'; For local testing
+export const EXPRESS_BASE_URL = 'http://20.40.46.20:3000'; //To be made Dynamic through env
 export const GET_TILES = `${EXPRESS_BASE_URL}/api/tiles`;
 export const UPLOAD_EXCEL = `${EXPRESS_BASE_URL}/uploadnew`;
 export const LOGIN = `${EXPRESS_BASE_URL}/login`;
