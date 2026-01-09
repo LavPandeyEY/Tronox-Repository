@@ -26,6 +26,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.9.0",
     "@wdio/devtools-service": "^8.40.2",
+    "apminsight": "^5.2.1",
     "axios": "^1.9.0",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
