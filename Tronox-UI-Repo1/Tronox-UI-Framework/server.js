@@ -1,4 +1,8 @@
 import apminsight from 'apminsight';
+apminsight.start({
+  serviceName: "tronox-ui-api",
+  environment: "production"
+});
 import express from "express";
 import { exec } from "child_process";
 import cors from "cors";
@@ -29,6 +33,12 @@ app.use("/documents", express.static(DOCUMENTS_FOLDER));
 app.use(cors());
 app.use(compression({ flush: zlibConstants.Z_SYNC_FLUSH }));
 app.use(bodyParser.json());
+// APM slow transaction test
+app.get("/slow", async (req, res) => {
+  await new Promise(resolve => setTimeout(resolve, 5000));
+  res.send("slow");
+});
+
 // Fix __dirname in ES Module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
