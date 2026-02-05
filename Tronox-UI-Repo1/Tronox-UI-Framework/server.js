@@ -1,7 +1,15 @@
-import apminsight from 'apminsight';
-apminsight.start({
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+ 
+const apminsight = require("apminsight");
+ 
+apminsight({
+
   serviceName: "tronox-ui-api",
-  environment: "production"
+
+  environment: "production",
+
 });
 import express from "express";
 import { exec } from "child_process";
